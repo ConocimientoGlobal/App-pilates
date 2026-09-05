@@ -428,8 +428,8 @@
       h+='<button class="btn btn-primary" onclick="window.app.nuevaSesionRapida()">'+ICON.bolt+' Crear Nueva Sesión</button></div>';
       h+='<div class="section-title">Datos</div>';
       h+='<div class="menu-grid" style="grid-template-columns:repeat(3,1fr)">';
-      h+='<div class="menu-card" style="padding:12px" onclick="window.app.exportarDatos()"><div class="menu-icon" style="font-size:1.2rem">📤</div><div class="menu-label" style="font-size:0.75rem">Exportar</div></div>';
-      h+='<div class="menu-card" style="padding:12px" onclick="window.app.importarDatos()"><div class="menu-icon" style="font-size:1.2rem">📥</div><div class="menu-label" style="font-size:0.75rem">Importar</div></div>';
+      h+='<div class="menu-card" style="padding:12px" onclick="window.app.exportarCSV()"><div class="menu-icon" style="font-size:1.2rem">📊</div><div class="menu-label" style="font-size:0.75rem">Exportar Excel</div></div>';
+      h+='<div class="menu-card" style="padding:12px" onclick="window.app.compartirWhatsApp()"><div class="menu-icon" style="font-size:1.2rem">💬</div><div class="menu-label" style="font-size:0.75rem">Enviar WhatsApp</div></div>';
       h+='<div class="menu-card" style="padding:12px" onclick="window.app.limpiarDatos()"><div class="menu-icon" style="font-size:1.2rem">🗑️</div><div class="menu-label" style="font-size:0.75rem">Limpiar</div></div>';
       h+='</div></div>';
       document.getElementById('app').innerHTML=h;
@@ -846,6 +846,7 @@
       h+='<div class="ejercicio-item"><div class="ejercicio-nombre">'+e.n+'</div><div class="ejercicio-chips"><span class="chip chip-lilac">'+e.f+'</span><span class="chip chip-mauve">'+e.d+'m</span></div>';
       h+='<div style="margin-top:4px;font-size:0.75rem;color:var(--text-lighter)"><span>'+e.de+'</span></div></div>';}}
       h+='<button class="btn btn-ghost danger" onclick="window.app.eliminarSesion(\''+s.id+'\')" style="margin-top:16px">🗑️ Eliminar Sesión</button>';
+      h+='<button class="btn btn-ghost" onclick="window.app.exportarClasePDF(\''+s.id+'\')" style="margin-top:8px">📄 Exportar PDF</button>';
       h+='</div>';document.getElementById('app').innerHTML=h;
     }
 
@@ -968,17 +969,99 @@
     
     function confirmarLimpiar(){
       var borrado=[];
-      if(!document.getElementById('clrGR').checked){localStorage.removeItem('pilates_gr');borrado.push('Grupos');}
-      if(!document.getElementById('clrAL').checked){localStorage.removeItem('pilates_al');borrado.push('Alumnas');}
-      if(!document.getElementById('clrEJ').checked){localStorage.removeItem('pilates_ej');borrado.push('Ejercicios');}
-      if(!document.getElementById('clrSES').checked){localStorage.removeItem('pilates_ses_v3');borrado.push('Sesiones');}
+      if(!document.getElementById('clrGR').checked){
+        localStorage.removeItem('pilates_gr');
+        GR={GRP01:{id:'GRP01',no:'Matutino A',ni:[1],al:['ALU01','ALU02','ALU03']},GRP02:{id:'GRP02',no:'Avanzado B',ni:[3],al:['ALU04','ALU05','ALU06','ALU07']}};
+        borrado.push('Grupos');
+      }
+      if(!document.getElementById('clrAL').checked){
+        localStorage.removeItem('pilates_al');
+        AL={ALU01:{id:'ALU01',no:'María García',ni:1,re:[],ad:'Sin adaptaciones.'},ALU02:{id:'ALU02',no:'Laura Martínez',ni:1,re:['Progresiones lentas'],ad:'Progresiones lentas.'},ALU03:{id:'ALU03',no:'Carmen Rodriguez',ni:0,re:['NO inversiones'],ad:'Evitar inversión.'},ALU04:{id:'ALU04',no:'Ana López',ni:3,re:[],ad:'Sin adaptaciones.'},ALU05:{id:'ALU05',no:'Elena Sanchez',ni:2,re:['Reducir rango equilibrio'],ad:'Reducir rango.'},ALU06:{id:'ALU06',no:'Isabel Torres',ni:3,re:[],ad:'Sin adaptaciones.'},ALU07:{id:'ALU07',no:'Patricia Gomez',ni:3,re:[],ad:'Sin adaptaciones.'}};
+        borrado.push('Alumnas');
+      }
+      if(!document.getElementById('clrEJ').checked){
+        localStorage.removeItem('pilates_ej');
+        EJ=[];
+        borrado.push('Ejercicios');
+      }
+      if(!document.getElementById('clrSES').checked){
+        localStorage.removeItem('pilates_ses_v3');
+        SES=[];
+        borrado.push('Sesiones');
+      }
       if(!borrado.length){toast('No se seleccionó nada para limpiar');return;}
-      // Recargar datos en memoria
-      if(!document.getElementById('clrGR').checked){GR={GRP01:{id:'GRP01',no:'Matutino A',ni:[1],al:['ALU01','ALU02','ALU03']},GRP02:{id:'GRP02',no:'Avanzado B',ni:[3],al:['ALU04','ALU05','ALU06','ALU07']}};}
-      if(!document.getElementById('clrAL').checked){AL={ALU01:{id:'ALU01',no:'María García',ni:1,re:[],ad:'Sin adaptaciones.'},ALU02:{id:'ALU02',no:'Laura Martínez',ni:1,re:['Progresiones lentas'],ad:'Progresiones lentas.'},ALU03:{id:'ALU03',no:'Carmen Rodriguez',ni:0,re:['NO inversiones'],ad:'Evitar inversión.'},ALU04:{id:'ALU04',no:'Ana López',ni:3,re:[],ad:'Sin adaptaciones.'},ALU05:{id:'ALU05',no:'Elena Sanchez',ni:2,re:['Reducir rango equilibrio'],ad:'Reducir rango.'},ALU06:{id:'ALU06',no:'Isabel Torres',ni:3,re:[],ad:'Sin adaptaciones.'},ALU07:{id:'ALU07',no:'Patricia Gomez',ni:3,re:[],ad:'Sin adaptaciones.'}};}
-      if(!document.getElementById('clrSES').checked){SES=[];}
       toast('✓ Limpiado: '+borrado.join(', '));
       setTimeout(function(){renderInicio();},800);
+    }
+    
+    // Exportar clases a CSV (abre en Excel)
+    function exportarCSV(){
+      if(!SES.length){toast('No hay clases para exportar');return;}
+      var csv='Grupo,Fecha,Hora,Duración (min),Intensidad,Equipamiento\n';
+      for(var i=0;i<SES.length;i++){
+        var s=SES[i];
+        csv+='"'+s.grupo+'","'+s.fecha+'","'+s.hora+'",'+s.duracion+',"'+(s.ins?s.ins.join('; '):'')+'","'+(s.equipo?s.equipo.join('; '):'')+'"\n';
+      }
+      var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+      var link=document.createElement('a');
+      link.href=URL.createObjectURL(blob);
+      link.download='clases-pilates-'+new Date().toISOString().slice(0,10)+'.csv';
+      link.click();
+      toast('✓ Archivo CSV descargado');
+    }
+    
+    // Compartir clases por WhatsApp
+    function compartirWhatsApp(){
+      if(!SES.length){toast('No hay clases para compartir');return;}
+      var msg='📅 *CLASES DE PILATES*\n\n';
+      for(var i=0;i<SES.length;i++){
+        var s=SES[i];
+        msg+='🏋️ *'+s.grupo+'*\n';
+        msg+='📆 '+s.fecha+' | ⏰ '+s.hora+'\n';
+        msg+='⏱️ '+s.duracion+' min\n';
+        if(s.ins) msg+='💪 Intensidad: '+s.ins.join(', ')+'\n';
+        if(s.equipo) msg+='🔧 Equipo: '+s.equipo.join(', ')+'\n';
+        msg+='\n';
+      }
+      msg+='_\nEnviado desde Pilates Studio Pro_';
+      var url='https://wa.me/?text='+encodeURIComponent(msg);
+      window.open(url,'_blank');
+      toast('✓ Abriendo WhatsApp...');
+    }
+    
+    // Exportar detalle de una clase a PDF (HTML imprimible)
+    function exportarClasePDF(sid){
+      var s=null;
+      for(var i=0;i<SES.length;i++){if(SES[i].id===sid){s=SES[i];break;}}
+      if(!s){toast('Clase no encontrada');return;}
+      
+      var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Clase - '+s.grupo+'</title>';
+      html+='<style>body{font-family:Arial,sans-serif;padding:20px}h1{color:#9b8ec4;border-bottom:2px solid #9b8ec4;padding-bottom:10px}h2{color:#6b5d5d;margin-top:20px}table{width:100%;border-collapse:collapse;margin-top:10px}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#9b8ec4;color:#fff}</style></head><body>';
+      html+='<h1>Clase - '+s.grupo+'</h1>';
+      html+='<p><strong>Fecha:</strong> '+s.fecha+' | <strong>Hora:</strong> '+s.hora+'</p>';
+      html+='<p><strong>Duración:</strong> '+s.duracion+' minutos</p>';
+      if(s.ins) html+='<p><strong>Intensidad:</strong> '+s.ins.join(', ')+'</p>';
+      if(s.equipo) html+='<p><strong>Equipamiento:</strong> '+s.equipo.join(', ')+'</p>';
+      
+      var fases=['Preparación','Activación','Desarrollo','Centro','Integración','Funcional','Cierre'];
+      for(var f=0;f<7;f++){
+        var fase=fases[f],ej=s.fases[fase];
+        if(!ej||!ej.length)continue;
+        html+='<h2>'+fase+'</h2>';
+        html+='<table><tr><th>Ejercicio</th><th>Familia</th><th>Zona</th><th>Duración</th><th>Descripción</th></tr>';
+        for(var i2=0;i2<ej.length;i2++){
+          var e=ej[i2];
+          html+='<tr><td>'+e.n+'</td><td>'+e.f+'</td><td>'+(e.z!==undefined?ZONAS[e.z]:'')+'</td><td>'+e.d+' min</td><td>'+(e.de||'')+'</td></tr>';
+        }
+        html+='</table>';
+      }
+      html+='</body></html>';
+      
+      var w=window.open('','_blank');
+      w.document.write(html);
+      w.document.close();
+      setTimeout(function(){w.print();},500);
+      toast('✓ Abriendo vista para imprimir/guardar PDF');
     }
     
     // Eliminar una sesión individual
@@ -1037,7 +1120,7 @@
       saveEJ();
     };
 
-    window.app={renderInicio:renderInicio,verGrupos:verGrupos,formGrupo:formGrupo,guardarGrupo:guardarGrupo,eliminarGrupo:eliminarGrupo,verGrupo:verGrupo,agregarAlumnaGrupo:agregarAlumnaGrupo,confirmarAgregarAlumna:confirmarAgregarAlumna,quitarAlumnaGrupo:quitarAlumnaGrupo,confirmarQuitarAlumna:confirmarQuitarAlumna,verAlumnasGrupo:verAlumnasGrupo,verAlumnas:verAlumnas,formAlumna:formAlumna,guardarAlumna:guardarAlumna,eliminarAlumna:eliminarAlumna,verAlumna:verAlumna,verEjercicios:verEjercicios,formEjercicio:formEjercicio,guardarEjercicio:guardarEjercicio,eliminarEjercicio:eliminarEjercicio,nuevaSesionRapida:nuevaSesionRapida,selDur:selDur,irNS:irNS,nuevaSesion:nuevaSesion,genSes:genSes,aprSes:aprSes,verHistorial:verHistorial,verSesion:verSesion,camMes:camMes,selDia:selDia,renderSesion:renderSesion,entrarEditMode:entrarEditMode,salirEditMode:salirEditMode,removeEjercicio:removeEjercicio,addEjercicio:addEjercicio,filtrarEjercicios:filtrarEjercicios,agregarEjercicioSesion:agregarEjercicioSesion,swapEjercicio:swapEjercicio,filtrarSwap:filtrarSwap,confirmSwap:confirmSwap,exportarDatos:exportarDatos,importarDatos:importarDatos,limpiarDatos:limpiarDatos,confirmarLimpiar:confirmarLimpiar,eliminarSesion:eliminarSesion,eliminarDia:eliminarDia};
+    window.app={renderInicio:renderInicio,verGrupos:verGrupos,formGrupo:formGrupo,guardarGrupo:guardarGrupo,eliminarGrupo:eliminarGrupo,verGrupo:verGrupo,agregarAlumnaGrupo:agregarAlumnaGrupo,confirmarAgregarAlumna:confirmarAgregarAlumna,quitarAlumnaGrupo:quitarAlumnaGrupo,confirmarQuitarAlumna:confirmarQuitarAlumna,verAlumnasGrupo:verAlumnasGrupo,verAlumnas:verAlumnas,formAlumna:formAlumna,guardarAlumna:guardarAlumna,eliminarAlumna:eliminarAlumna,verAlumna:verAlumna,verEjercicios:verEjercicios,formEjercicio:formEjercicio,guardarEjercicio:guardarEjercicio,eliminarEjercicio:eliminarEjercicio,nuevaSesionRapida:nuevaSesionRapida,selDur:selDur,irNS:irNS,nuevaSesion:nuevaSesion,genSes:genSes,aprSes:aprSes,verHistorial:verHistorial,verSesion:verSesion,camMes:camMes,selDia:selDia,renderSesion:renderSesion,entrarEditMode:entrarEditMode,salirEditMode:salirEditMode,removeEjercicio:removeEjercicio,addEjercicio:addEjercicio,filtrarEjercicios:filtrarEjercicios,agregarEjercicioSesion:agregarEjercicioSesion,swapEjercicio:swapEjercicio,filtrarSwap:filtrarSwap,confirmSwap:confirmSwap,exportarDatos:exportarDatos,importarDatos:importarDatos,limpiarDatos:limpiarDatos,confirmarLimpiar:confirmarLimpiar,eliminarSesion:eliminarSesion,eliminarDia:eliminarDia,exportarCSV:exportarCSV,compartirWhatsApp:compartirWhatsApp,exportarClasePDF:exportarClasePDF};
 
     renderInicio();
   }catch(e){document.getElementById('app').innerHTML='<div class="info-card" style="border-left:3px solid var(--mauve)"><h3 style="color:var(--mauve)">Error</h3><p>'+e.message+'</p></div>';}
