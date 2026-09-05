@@ -417,6 +417,8 @@
     // RENDERIZADO
     // ============================================================
     function renderInicio(){
+      var splash=document.getElementById('splash-screen');
+      if(splash){setTimeout(function(){splash.style.display='none';},1500);}
       var ng=Object.keys(GR).length,na=Object.keys(AL).length,ne=EJ.length;
       var h='<div class="header"><h1>Pilates Studio</h1></div><div class="content">';
       h+='<div class="welcome-card"><h2>Hola, Profe!</h2><p class="tagline">Cada clase es una oportunidad de transformar cuerpos y mentes.</p><p class="quote">"Un buen físico es el primer requisito para la felicidad." — J.H. Pilates</p><div class="stats-row"><div class="stat-item"><span class="stat-value">'+ng+'</span><span class="stat-label">Grupos</span></div><div class="stat-item"><span class="stat-value">'+na+'</span><span class="stat-label">Alumnas</span></div><div class="stat-item"><span class="stat-value">'+ne+'</span><span class="stat-label">Ejercicios</span></div></div></div>';
