@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pilates Studio</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,Helvetica,sans-serif;background:#faf8f5;color:#3d3530;line-height:1.5;min-height:100vh}
+.header{background:linear-gradient(135deg,#9b8ec4 0%,#7a6fa8 100%);color:#fff;padding:20px 16px;position:sticky;top:0;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,0.08)}
+.header h1{font-size:1.5rem;font-weight:600;letter-spacing:0.5px}
+.header .back{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;opacity:0.9;margin-bottom:4px}
+.header .back:hover{opacity:1}
+.content{padding:16px;max-width:600px;margin:0 auto}
+.welcome-card{background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);text-align:center}
+.welcome-card h2{font-size:1.8rem;font-weight:600;color:#7a6fa8;margin-bottom:8px}
+.welcome-card .tagline{font-size:0.95rem;color:#6b5d5d;margin-bottom:12px}
+.welcome-card .quote{font-size:0.85rem;font-style:italic;color:#9a8d8d;border-top:1px solid #f0ece5;padding-top:12px}
+.stats-row{display:flex;justify-content:center;gap:24px;margin-top:16px}
+.stat-item{display:flex;flex-direction:column;align-items:center}
+.stat-value{font-size:1.6rem;font-weight:700;color:#9b8ec4}
+.stat-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#9a8d8d}
+.section-title{font-size:0.75rem;text-transform:uppercase;letter-spacing:1.5px;color:#9a8d8d;margin:20px 0 12px;font-weight:500}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+.menu-card{background:#fff;border-radius:12px;padding:20px 16px;text-align:center;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.menu-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.08)}
+.menu-card .icon{display:flex;justify-content:center;margin-bottom:8px;color:#9b8ec4}
+.menu-card .label{font-size:0.85rem;font-weight:500}
+.card{background:#fff;border-radius:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer}
+.card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.08)}
+.card-body{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.card-icon{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:#faf8f5;color:#9b8ec4;flex-shrink:0}
+.card-info{flex:1;min-width:0}
+.card-title{font-weight:500;font-size:0.95rem}
+.card-subtitle{font-size:0.8rem;color:#9a8d8d}
+.card-actions{display:flex;gap:6px;flex-shrink:0}
+.card-actions button{background:none;border:1px solid #f0ece5;border-radius:8px;padding:6px 10px;font-size:0.75rem;cursor:pointer;display:flex;align-items:center;gap:4px;color:#6b5d5d}
+.card-actions button.danger{color:#c4a0a0;border-color:#e0c8c8}
+.info-card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:4px solid #9b8ec4}
+.info-card h3{font-size:1.3rem;color:#7a6fa8;margin-bottom:4px}
+.info-card p{font-size:0.85rem;color:#6b5d5d;margin-bottom:2px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:0.8rem;font-weight:500;color:#6b5d5d;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.form-input,.select-input,.form-textarea{width:100%;padding:12px 14px;border:1px solid #f0ece5;border-radius:8px;font-family:inherit;font-size:0.9rem;background:#fff;transition:border-color 0.2s}
+.form-input:focus,.select-input:focus,.form-textarea:focus{outline:none;border-color:#9b8ec4}
+.form-textarea{min-height:80px;resize:vertical}
+.checkbox-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.checkbox-grid label{display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer;padding:8px 10px;background:#faf8f5;border-radius:8px}
+.checkbox-grid input[type="checkbox"]{accent-color:#9b8ec4;width:16px;height:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border:none;border-radius:8px;font-family:inherit;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s;width:100%;margin-bottom:8px}
+.btn-primary{background:#9b8ec4;color:#fff}
+.btn-primary:hover{background:#7a6fa8}
+.btn-outline{background:#fff;color:#9b8ec4;border:1px solid #9b8ec4}
+.btn-ghost{background:transparent;color:#9b8ec4}
+.btn-ghost.danger{color:#c4a0a0}
+.btn-group{display:flex;gap:8px}
+.btn-group .btn{margin-bottom:0}
+.chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:24px;font-size:0.7rem;font-weight:500;letter-spacing:0.3px}
+.chip-lilac{background:#c4b8e0;color:#7a6fa8}
+.chip-cream{background:#f0ece5;color:#3d3530}
+.chip-mauve{background:#e0c8c8;color:#c4a0a0}
+.chip-sage{background:#c8d8c0;color:#a3b89a}
+.ejercicio-item{background:#fff;border-radius:8px;padding:12px 14px;margin-bottom:8px;border:1px solid #f0ece5}
+.ejercicio-nombre{font-weight:500;font-size:0.9rem;margin-bottom:6px}
+.ejercicio-chips{display:flex;flex-wrap:wrap;gap:6px}
+.fase-header{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:0.75rem;text-transform:uppercase;letter-spacing:1.5px;color:#9b8ec4;font-weight:600}
+.fase-header::after{content:'';flex:1;height:1px;background:#c4b8e0}
+.duracion-selector{display:flex;flex-wrap:wrap;gap:8px}
+.duracion-option{width:60px;text-align:center;padding:10px 6px;border:2px solid #f0ece5;border-radius:8px;cursor:pointer;transition:all 0.2s}
+.duracion-option:hover{border-color:#c4b8e0}
+.duracion-option.selected{border-color:#9b8ec4;background:#faf8f5}
+.duracion-option .valor{font-size:1.1rem;font-weight:600;color:#9b8ec4}
+.duracion-option .unidad{font-size:0.65rem;color:#9a8d8d;text-transform:uppercase}
+.duracion-total{display:flex;align-items:center;gap:6px;padding:10px 14px;background:#faf8f5;border-radius:8px;font-size:0.85rem;color:#6b5d5d;margin-bottom:12px}
+.empty-state{text-align:center;padding:40px 20px;color:#9a8d8d}
+.empty-state .icon{font-size:2.5rem;margin-bottom:12px;opacity:0.5}
+.empty-state p{font-size:0.9rem}
+.edit-mode-banner{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#c8d8c0;color:#a3b89a;border-radius:8px;font-size:0.85rem;font-weight:500;margin-bottom:12px}
+.calendario{background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.calendario-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.calendario-header h3{font-size:1.1rem}
+.calendario-header button{background:none;border:none;cursor:pointer;padding:6px;color:#9b8ec4;display:flex;align-items:center}
+.calendario-semana{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.calendario-dia-nombre{text-align:center;font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#9a8d8d;padding:4px}
+.calendario-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.calendario-dia{display:flex;align-items:center;justify-content:center;height:36px;font-size:0.8rem;border-radius:50%;cursor:pointer;transition:all 0.2s;position:relative}
+.calendario-dia:hover{background:#faf8f5}
+.calendario-dia.hoy{font-weight:700;color:#9b8ec4}
+.calendario-dia.con-sesiones::after{content:'';position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;background:#a3b89a}
+.calendario-dia.seleccionado{background:#9b8ec4;color:#fff}
+.calendario-dia.seleccionado::after{background:#fff}
+.calendario-dia.otro-men{opacity:0.3;pointer-events:none}
+.sesiones-dia{margin-top:16px}
+.sesion-card{background:#faf8f5;border-radius:8px;padding:14px;margin-bottom:8px;cursor:pointer}
+.sesion-card-header{display:flex;align-items:center;justify-content:space-between}
+.sesion-card-titulo{font-weight:500;font-size:0.9rem}
+.sesion-card-detalle{font-size:0.75rem;color:#9a8d8d}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#3d3530;color:#fff;padding:12px 24px;border-radius:24px;font-size:0.85rem;font-weight:500;z-index:1000}
+.toast.error{background:#c4a0a0}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#9b8ec4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+<div id="app"></div>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').then(function(reg){
+    console.log('Service Worker registrado');
+  }).catch(function(err){
+    console.log('Error registrando Service Worker:', err);
+  });
+}
+</script>
+<script src="app.js"></script>
+</body>
+</html>
