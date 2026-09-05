@@ -1,11 +1,12 @@
-const CACHE_NAME = 'pilates-studio-v1';
+const CACHE_NAME = 'pilates-studio-v3';
+const APP_VERSION = '1.0.3';
 const ASSETS = [
   './',
   './index.html',
   './app.js',
   './manifest.json',
-  './icon-192.jpg',
-  './icon-512.jpg'
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 self.addEventListener('install', function(event) {
