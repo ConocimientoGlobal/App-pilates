@@ -951,47 +951,63 @@
       input.click();
     }
     
-    // Limpiar datos selectivos
+    // Limpiar datos - método simple con botones individuales
     function limpiarDatos(){
       var ng=Object.keys(GR).length,na=Object.keys(AL).length,ne=EJ.length,ns=SES.length;
       var h='<div class="header"><span class="back" onclick="window.app.renderInicio()">'+ICON.arrowLeft+'</span><h1>Limpiar Datos</h1></div><div class="content">';
-      h+='<p style="margin-bottom:16px;font-size:0.9rem;color:var(--text-lighter)">Seleccioná qué datos querés conservar. Los datos no seleccionados se eliminarán.</p>';
+      h+='<p style="margin-bottom:16px;font-size:0.9rem;color:var(--text-lighter)">Seleccioná qué dato querés eliminar. Esta acción no se puede deshacer.</p>';
       
-      h+='<div class="form-group"><label><input type="checkbox" id="clrGR" checked> Conservar Grupos ('+ng+')</label></div>';
-      h+='<div class="form-group"><label><input type="checkbox" id="clrAL" checked> Conservar Alumnas ('+na+')</label></div>';
-      h+='<div class="form-group"><label><input type="checkbox" id="clrEJ" checked> Conservar Ejercicios ('+ne+')</label></div>';
-      h+='<div class="form-group"><label><input type="checkbox" id="clrSES" checked> Conservar Sesiones/Calendario ('+ns+')</label></div>';
+      h+='<div class="card" style="margin-bottom:8px"><div class="card-body"><div class="card-info"><div class="card-title">Grupos</div><div class="card-subtitle">'+ng+' grupos cargados</div></div><button class="btn btn-ghost danger" onclick="window.app.borrarGrupos()">🗑️ Borrar</button></div></div>';
       
-      h+='<div style="margin-top:24px"><button class="btn btn-primary" onclick="window.app.confirmarLimpiar()">Aplicar Cambios</button>';
-      h+='<button class="btn btn-ghost" onclick="window.app.renderInicio()">Cancelar</button></div></div>';
+      h+='<div class="card" style="margin-bottom:8px"><div class="card-body"><div class="card-info"><div class="card-title">Alumnas</div><div class="card-subtitle">'+na+' alumnas cargadas</div></div><button class="btn btn-ghost danger" onclick="window.app.borrarAlumnas()">🗑️ Borrar</button></div></div>';
+      
+      h+='<div class="card" style="margin-bottom:8px"><div class="card-body"><div class="card-info"><div class="card-title">Ejercicios</div><div class="card-subtitle">'+ne+' ejercicios cargados</div></div><button class="btn btn-ghost danger" onclick="window.app.borrarEjercicios()">🗑️ Borrar</button></div></div>';
+      
+      h+='<div class="card" style="margin-bottom:8px"><div class="card-body"><div class="card-info"><div class="card-title">Sesiones/Calendario</div><div class="card-subtitle">'+ns+' sesiones cargadas</div></div><button class="btn btn-ghost danger" onclick="window.app.borrarSesiones()">🗑️ Borrar</button></div></div>';
+      
+      h+='<div style="margin-top:24px"><button class="btn btn-ghost danger" onclick="window.app.borrarTodo()">⚠️ Borrar Todo</button></div>';
+      h+='</div>';
       document.getElementById('app').innerHTML=h;
     }
     
-    function confirmarLimpiar(){
-      var borrado=[];
-      if(!document.getElementById('clrGR').checked){
-        localStorage.removeItem('pilates_gr');
-        GR={GRP01:{id:'GRP01',no:'Matutino A',ni:[1],al:['ALU01','ALU02','ALU03']},GRP02:{id:'GRP02',no:'Avanzado B',ni:[3],al:['ALU04','ALU05','ALU06','ALU07']}};
-        borrado.push('Grupos');
-      }
-      if(!document.getElementById('clrAL').checked){
-        localStorage.removeItem('pilates_al');
-        AL={ALU01:{id:'ALU01',no:'María García',ni:1,re:[],ad:'Sin adaptaciones.'},ALU02:{id:'ALU02',no:'Laura Martínez',ni:1,re:['Progresiones lentas'],ad:'Progresiones lentas.'},ALU03:{id:'ALU03',no:'Carmen Rodriguez',ni:0,re:['NO inversiones'],ad:'Evitar inversión.'},ALU04:{id:'ALU04',no:'Ana López',ni:3,re:[],ad:'Sin adaptaciones.'},ALU05:{id:'ALU05',no:'Elena Sanchez',ni:2,re:['Reducir rango equilibrio'],ad:'Reducir rango.'},ALU06:{id:'ALU06',no:'Isabel Torres',ni:3,re:[],ad:'Sin adaptaciones.'},ALU07:{id:'ALU07',no:'Patricia Gomez',ni:3,re:[],ad:'Sin adaptaciones.'}};
-        borrado.push('Alumnas');
-      }
-      if(!document.getElementById('clrEJ').checked){
-        localStorage.removeItem('pilates_ej');
-        EJ=[];
-        borrado.push('Ejercicios');
-      }
-      if(!document.getElementById('clrSES').checked){
-        localStorage.removeItem('pilates_ses_v3');
-        SES=[];
-        borrado.push('Sesiones');
-      }
-      if(!borrado.length){toast('No se seleccionó nada para limpiar');return;}
-      toast('✓ Limpiado: '+borrado.join(', '));
-      setTimeout(function(){renderInicio();},800);
+    function borrarGrupos(){
+      if(!confirm('¿Borrar TODOS los grupos? Esta acción no se puede deshacer.'))return;
+      GR={};
+      saveGR();
+      toast('✓ Grupos eliminados');
+      limpiarDatos();
+    }
+    
+    function borrarAlumnas(){
+      if(!confirm('¿Borrar TODAS las alumnas? Esta acción no se puede deshacer.'))return;
+      AL={};
+      saveAL();
+      toast('✓ Alumnas eliminadas');
+      limpiarDatos();
+    }
+    
+    function borrarEjercicios(){
+      if(!confirm('¿Borrar TODOS los ejercicios? Esta acción no se puede deshacer.'))return;
+      EJ=[];
+      saveEJ();
+      toast('✓ Ejercicios eliminados');
+      limpiarDatos();
+    }
+    
+    function borrarSesiones(){
+      if(!confirm('¿Borrar TODAS las sesiones del calendario? Esta acción no se puede deshacer.'))return;
+      SES=[];
+      saveSES();
+      toast('✓ Sesiones eliminadas');
+      limpiarDatos();
+    }
+    
+    function borrarTodo(){
+      if(!confirm('¿Estás seguro de borrar TODOS los datos? Esta acción no se puede deshacer.'))return;
+      GR={};AL={};EJ=[];SES=[];
+      saveGR();saveAL();saveEJ();saveSES();
+      toast('✓ Todos los datos fueron eliminados');
+      renderInicio();
     }
     
     // Exportar clases a CSV (abre en Excel)
@@ -1120,7 +1136,7 @@
       saveEJ();
     };
 
-    window.app={renderInicio:renderInicio,verGrupos:verGrupos,formGrupo:formGrupo,guardarGrupo:guardarGrupo,eliminarGrupo:eliminarGrupo,verGrupo:verGrupo,agregarAlumnaGrupo:agregarAlumnaGrupo,confirmarAgregarAlumna:confirmarAgregarAlumna,quitarAlumnaGrupo:quitarAlumnaGrupo,confirmarQuitarAlumna:confirmarQuitarAlumna,verAlumnasGrupo:verAlumnasGrupo,verAlumnas:verAlumnas,formAlumna:formAlumna,guardarAlumna:guardarAlumna,eliminarAlumna:eliminarAlumna,verAlumna:verAlumna,verEjercicios:verEjercicios,formEjercicio:formEjercicio,guardarEjercicio:guardarEjercicio,eliminarEjercicio:eliminarEjercicio,nuevaSesionRapida:nuevaSesionRapida,selDur:selDur,irNS:irNS,nuevaSesion:nuevaSesion,genSes:genSes,aprSes:aprSes,verHistorial:verHistorial,verSesion:verSesion,camMes:camMes,selDia:selDia,renderSesion:renderSesion,entrarEditMode:entrarEditMode,salirEditMode:salirEditMode,removeEjercicio:removeEjercicio,addEjercicio:addEjercicio,filtrarEjercicios:filtrarEjercicios,agregarEjercicioSesion:agregarEjercicioSesion,swapEjercicio:swapEjercicio,filtrarSwap:filtrarSwap,confirmSwap:confirmSwap,exportarDatos:exportarDatos,importarDatos:importarDatos,limpiarDatos:limpiarDatos,confirmarLimpiar:confirmarLimpiar,eliminarSesion:eliminarSesion,eliminarDia:eliminarDia,exportarCSV:exportarCSV,compartirWhatsApp:compartirWhatsApp,exportarClasePDF:exportarClasePDF};
+    window.app={renderInicio:renderInicio,verGrupos:verGrupos,formGrupo:formGrupo,guardarGrupo:guardarGrupo,eliminarGrupo:eliminarGrupo,verGrupo:verGrupo,agregarAlumnaGrupo:agregarAlumnaGrupo,confirmarAgregarAlumna:confirmarAgregarAlumna,quitarAlumnaGrupo:quitarAlumnaGrupo,confirmarQuitarAlumna:confirmarQuitarAlumna,verAlumnasGrupo:verAlumnasGrupo,verAlumnas:verAlumnas,formAlumna:formAlumna,guardarAlumna:guardarAlumna,eliminarAlumna:eliminarAlumna,verAlumna:verAlumna,verEjercicios:verEjercicios,formEjercicio:formEjercicio,guardarEjercicio:guardarEjercicio,eliminarEjercicio:eliminarEjercicio,nuevaSesionRapida:nuevaSesionRapida,selDur:selDur,irNS:irNS,nuevaSesion:nuevaSesion,genSes:genSes,aprSes:aprSes,verHistorial:verHistorial,verSesion:verSesion,camMes:camMes,selDia:selDia,renderSesion:renderSesion,entrarEditMode:entrarEditMode,salirEditMode:salirEditMode,removeEjercicio:removeEjercicio,addEjercicio:addEjercicio,filtrarEjercicios:filtrarEjercicios,agregarEjercicioSesion:agregarEjercicioSesion,swapEjercicio:swapEjercicio,filtrarSwap:filtrarSwap,confirmSwap:confirmSwap,exportarDatos:exportarDatos,importarDatos:importarDatos,limpiarDatos:limpiarDatos,borrarGrupos:borrarGrupos,borrarAlumnas:borrarAlumnas,borrarEjercicios:borrarEjercicios,borrarSesiones:borrarSesiones,borrarTodo:borrarTodo,eliminarSesion:eliminarSesion,eliminarDia:eliminarDia,exportarCSV:exportarCSV,compartirWhatsApp:compartirWhatsApp,exportarClasePDF:exportarClasePDF};
 
     renderInicio();
   }catch(e){document.getElementById('app').innerHTML='<div class="info-card" style="border-left:3px solid var(--mauve)"><h3 style="color:var(--mauve)">Error</h3><p>'+e.message+'</p></div>';}
