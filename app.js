@@ -971,6 +971,7 @@
     }
     
     function borrarGrupos(){
+      if(!confirm('¿Borrar TODOS los grupos? Esta acción no se puede deshacer.'))return;
       GR={};
       localStorage.removeItem('pilates_gr');
       toast('✓ Grupos eliminados');
@@ -978,6 +979,7 @@
     }
     
     function borrarAlumnas(){
+      if(!confirm('¿Borrar TODAS las alumnas? Esta acción no se puede deshacer.'))return;
       AL={};
       localStorage.removeItem('pilates_al');
       toast('✓ Alumnas eliminadas');
@@ -985,6 +987,7 @@
     }
     
     function borrarEjercicios(){
+      if(!confirm('¿Borrar TODOS los ejercicios? Esta acción no se puede deshacer.'))return;
       EJ=[];
       localStorage.removeItem('pilates_ej');
       toast('✓ Ejercicios eliminados');
@@ -992,6 +995,7 @@
     }
     
     function borrarSesiones(){
+      if(!confirm('¿Borrar TODAS las sesiones del calendario? Esta acción no se puede deshacer.'))return;
       SES=[];
       localStorage.removeItem('pilates_ses_v3');
       toast('✓ Sesiones eliminadas');
@@ -999,6 +1003,7 @@
     }
     
     function borrarTodo(){
+      if(!confirm('¿Estás seguro de borrar TODOS los datos? Esta acción no se puede deshacer.'))return;
       GR={};AL={};EJ=[];SES=[];
       localStorage.removeItem('pilates_gr');
       localStorage.removeItem('pilates_al');
