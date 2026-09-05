@@ -1,0 +1,23 @@
+{
+  "packageId": "com.pilates.studio.pro",
+  "host": "ConocimientoGlobal.github.io",
+  "name": "Pilates Studio Pro",
+  "launcherName": "PilatesPro",
+  "display": "standalone",
+  "themeColor": "#9b8ec4",
+  "navigationColor": "#9b8ec4",
+  "backgroundColor": "#faf8f5",
+  "enableNotifications": true,
+  "startUrl": "/App-pilates/",
+  "iconUrl": "https://ConocimientoGlobal.github.io/App-pilates/icon-512.jpg",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "/data/data/com.termux/files/home/pilates-web/keystore.jks",
+    "alias": "pilates",
+    "aliasPassword": "pilates123"
+  },
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "additionalTrustedOrigins": [],
+  "retainedBrowserTabs": []
+}
