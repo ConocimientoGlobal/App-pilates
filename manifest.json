@@ -20,12 +20,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "splash-screen.jpg",
-      "sizes": "1080x1920",
-      "type": "image/jpeg",
-      "purpose": "any"
     }
   ]
 }
