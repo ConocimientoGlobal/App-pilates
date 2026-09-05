@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.pilates.studio.pro",
+      "sha256_cert_fingerprints": [
+        "29:C6:AA:4B:55:40:4F:D2:28:26:BC:7B:DB:9C:91:4C:88:12:22:89:9A:3A:EC:E9:48:35:49:A7:21:EB:FC:E0"
+      ]
+    }
+  }
+]
